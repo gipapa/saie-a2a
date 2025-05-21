@@ -32,7 +32,7 @@ Click on the task list to see all the A2A task updates from the remote agents
 
 ## Prerequisites
 
-- Python 3.12 or higher
+- Python 3.13 or higher
 - UV
 - Agent servers speaking A2A ([use these samples](/samples/python/agents/README.md))
 - Authentication credentials (API Key or Vertex AI)
@@ -65,37 +65,50 @@ Click on the task list to see all the A2A task updates from the remote agents
 
    For detailed instructions on authentication setup, see the [ADK documentation](https://google.github.io/adk-docs/get-started/quickstart/#set-up-the-model).
 
-3. Run the front end example:
+3. **Initialize the user database**:
+   ```bash
+   # Ensure you are in the demo/ui directory
+   uv run service/server/database_setup.py
+   ```
+   This will create a `users.db` file in the `demo/ui/service/server/` directory to store user accounts and settings.
+
+4. **Run the front end example**:
 
    ```bash
    uv run main.py
    ```
 
-   Note: The application runs on port 12000 by default
+   The application runs on port 12000 by default. Open your browser to `http://localhost:12000`. You will be greeted with a login/registration page.
 
-4. Interact with the demo, and add some sample agents which speak A2A:
+5. **Interact with the demo**:
 
-   You can ask the demo agent _"What remote agents do you have access to?"_
-   and there should not be any.
+   When you first access the application at `http://localhost:12000`, you'll need to create a user account.
+   - Use the **Registration Form** to set up your username and password. You can leave the "Agent Settings" field blank during initial registration if you wish.
+   - After successful registration, **log in** using your new credentials.
 
-   Next go start up **any** sample agent:
+   Once logged in, you can navigate to the **Settings** page from the side navigation. Here, you can manage your personal agent-related preferences (these are stored as a JSON string in your user profile). Note that global API keys for services like Google AI Studio or Vertex AI are still configured via the `.env` file (as described in Step 2).
 
+   After logging in, you can start interacting with the Host Agent on the main page.
+   You can ask the Host Agent _"What remote agents do you have access to?"_ It should initially report none.
+
+   Next, to add a remote agent, go start up **any** sample agent. For example, to run the Google ADK sample agent:
    ```bash
-   cd ../../samples/python/agents/google_adk/
+   # From the project root
+   cd samples/python/agents/google_adk/
+   # Copy the .env file if your agent needs API keys
    cp ../../../../demo/ui/.env ./
    uv run .
    ```
 
-   Back in the demo UI you can go to the _Remote Agents_ tab and add this agent's address:
-
+   Back in the demo UI (ensure you are logged in), navigate to the **Agents** tab. Add the address of the sample agent you just started, for example:
    ```
    localhost:10002
    ```
+   (The port may vary depending on the sample agent you run.)
 
-   Then you can converse with the demo agent and it should now have access to the _Reimbursement Agent_.
+   Now, when you converse with the Host Agent, it should have access to the newly added remote agent (e.g., the _Reimbursement Agent_ if you ran the Google ADK sample).
+   You can try asking it to _"reimburse lunch for 20 EUR but needs to be converted to USD ahead of time."_
 
-   You can ask it to _"reimburse lunch for 20 EUR but needs to be converted to USD ahead of time."_
+   Answer its questions. If you need help converting currency, try adding the LangGraph sample agent too (following a similar process to start it and add its AgentCard address).
 
-   Answer it's questions in a normal... If you need help converting currency, try adding the LangGraph sample agent too.
-
-   Review the events to see what happened.
+   Review the events and task list to see the A2A communication details.
