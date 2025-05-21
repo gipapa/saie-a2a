@@ -80,12 +80,21 @@ async def ListRemoteAgents():
         print('Failed to read agents', e)
 
 
-async def AddRemoteAgent(path: str):
+async def AddRemoteAgent(details: dict[str, Any] | str):
+    """
+    Registers an agent.
+    'details' can be a string (URL for auto-discovery) or a dictionary 
+    containing agent information for manual registration or auto-discovery with more context.
+    """
     client = ConversationClient(server_url)
     try:
-        await client.register_agent(RegisterAgentRequest(params=path))
+        # The RegisterAgentRequest.params can now accept a dict or a str
+        await client.register_agent(RegisterAgentRequest(params=details))
     except Exception as e:
-        print('Failed to register the agent', e)
+        print(f'Failed to register the agent: {e}')
+        # It might be useful to re-raise the exception or handle it more specifically
+        # if the UI needs to react to different types of registration errors.
+        raise # Re-raise the exception so save_agent in UI can catch it
 
 
 async def GetEvents() -> list[Event]:

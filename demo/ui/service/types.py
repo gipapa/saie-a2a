@@ -113,8 +113,8 @@ class ListTaskResponse(JSONRPCResponse):
 
 class RegisterAgentRequest(JSONRPCRequest):
     method: Literal['agent/register'] = 'agent/register'
-    # This is the base url of the agent card
-    params: str | None = None
+    # Parameters can be a string (URL for auto-discovery) or a dictionary for manual input
+    params: dict[str, Any] | str | None = None
 
 
 class RegisterAgentResponse(JSONRPCResponse):

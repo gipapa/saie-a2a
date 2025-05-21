@@ -9,9 +9,12 @@ class AgentState:
     agent_address: str = ''
     agent_name: str = ''
     agent_description: str = ''
-    input_modes: list[str]
-    output_modes: list[str]
+    input_modes: list[str] = []
+    output_modes: list[str] = []
     stream_supported: bool = False
     push_notifications_supported: bool = False
     error: str = ''
     agent_framework_type: str = ''
+    # New fields for UI enhancements
+    test_connection: bool = True
+    manual_input: bool = False
