@@ -18,6 +18,7 @@ from pages.agent_list import agent_list_page
 from pages.conversation import conversation_page
 from pages.event_list import event_list_page
 from pages.home import home_page_content
+from pages.login_page import login_page # Added import for login page
 from pages.settings import settings_page_content
 from pages.task_list import task_list_page
 from service.server.server import ConversationServer
@@ -31,6 +32,12 @@ load_dotenv()
 def on_load(e: me.LoadEvent):  # pylint: disable=unused-argument
     """On load event"""
     state = me.state(AppState)
+
+    # Redirect to login if not logged in and not already on the login page
+    if not state.current_username and me.url_path() != "/login":
+        me.navigate("/login")
+        return # Important to return to prevent further execution in on_load
+
     me.set_theme_mode(state.theme_mode)
     if 'conversation_id' in me.query_params:
         state.current_conversation_id = me.query_params['conversation_id']
@@ -59,6 +66,18 @@ security_policy = me.SecurityPolicy(
         'https://cdn.jsdelivr.net',
     ]
 )
+
+
+@me.page(
+    path='/login',
+    title='Login',
+    on_load=on_load,
+    security_policy=security_policy,
+)
+def login_route_wrapper():
+    """Login Page Route."""
+    # This calls the main function from demo/ui/pages/login_page.py
+    login_page()
 
 
 @me.page(

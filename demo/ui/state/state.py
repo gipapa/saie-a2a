@@ -98,6 +98,10 @@ class AppState:
     uses_vertex_ai: bool = False
     api_key_dialog_open: bool = False
 
+    # Added for user authentication and settings
+    current_username: str = ""
+    agent_settings: str = ""
+
 
 @me.stateclass
 class SettingsState:
